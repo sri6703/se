@@ -1,0 +1,69 @@
+
+GET http://localhost:4201/canteen
+
+
+###
+
+GET http://localhost:4201/canteen/main/breakfast
+
+###
+
+GET http://localhost:4201/canteen/main/lunch
+
+###
+
+GET http://localhost:4201/canteen/main/dinner
+
+###
+
+GET http://localhost:4201/canteen/business/breakfast
+
+###
+
+GET http://localhost:4201/canteen/business/lunch
+
+###
+
+GET http://localhost:4201/canteen/business/dinner
+
+###
+
+GET http://localhost:4201/canteen/it/breakfast
+
+###
+
+GET http://localhost:4201/canteen/it/lunch
+
+###
+
+GET http://localhost:4201/canteen/it/dinner
+
+###
+
+POST http://localhost:4201/canteen
+Content-Type: application/json
+
+{
+      "foodid" : 168,
+      "name": "thayir sadham",
+      "price": 5.99,
+      "description": "Tdosa with chutny and sambar",
+      "category":"dinner",
+      "canteenname":"main"
+}
+
+###
+
+DELETE http://localhost:4201/canteen/main/dinner/128
+
+###
+
+PATCH http://localhost:4201/canteen/business/lunch/128
+Content-Type: application/json
+
+{
+    "name": "Updated name",
+    "description": "Updated description",
+    "price": 10.99
+}
+
