@@ -1,4 +1,4 @@
-node_modules
+3node_modules
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json

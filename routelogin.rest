@@ -2,7 +2,7 @@
 GET http://localhost:4201/login-page/
 
 ###
-GET http://localhost:4201/login-page/cse20348
+GET http://localhost:4201/login-page/cse20305
 
 
 ###
@@ -11,24 +11,24 @@ POST http://localhost:4201/login-page
 Content-Type: application/json
 
 {
-    "name":"pranesh", 
-    "regno":"cse20150",
-    "email":"pran69@bts.com",
-    "pwd":"jash"
+    "name":"aksita", 
+    "regno":"cse20305",
+    "email":"aksita1@gmail.com",
+    "pwd":"abcd"
 }
 
 ###
 
-DELETE http://localhost:4201/login-page/cse20362
+DELETE http://localhost:4201/login-page/cse20305
 ###
 
-PATCH http://localhost:4201/login-page/cse20362
+PATCH http://localhost:4201/login-page/cse20305
 Content-Type: application/json
 
 {
-    "name":"Srinithi"
+    "name":"aks"
 }
 
 ###
 
-GET http://localhost:4201/login-page/cse20363/sanjay1
+GET http://localhost:4201/login-page/cse20310/abcde

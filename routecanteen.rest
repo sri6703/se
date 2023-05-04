@@ -58,11 +58,11 @@ DELETE http://localhost:4201/canteen/main/dinner/128
 
 ###
 
-PATCH http://localhost:4201/canteen/business/lunch/128
+PATCH http://localhost:4201/canteen/main/lunch/128
 Content-Type: application/json
 
 {
-    "name": "Updated name",
+    "name": "pasta",
     "description": "Updated description",
     "price": 10.99
 }

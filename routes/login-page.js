@@ -18,32 +18,28 @@ router.get('/:regno',getlogin, (req,res) => {
 })
 
 //creating one
-router.post('/', async (req,res) => {
-    //check if email and regno already exists
-    const emailExists = await login.findOne({ email: req.body.email })
-    if (emailExists) {
-        return res.status(400).json({ message: "Email already exists" })
-    }
-
-    const regnoExists = await login.findOne({ regno: req.body.regno })
-    if (regnoExists) {
-        return res.status(400).json({ message: "Regno already exists" })
-    }
-
-    const logindet = new login({
+router.post('/', async (req, res) => {
+    try {
+      const emailExists = await login.findOne({ email: req.body.email })
+      if (emailExists) {
+        return res.status(201).json({ message: "Email is already registered" })
+      }
+  
+      const logindet = new login({
         name : req.body.name,
         regno : req.body.regno,
         email : req.body.email,
         pwd: req.body.pwd
-    })
-
-    try {
-        const newlogin = await logindet.save()
-        res.status(201).json({message: "user created successfully"})
+      })
+  
+      const newlogin = await logindet.save()
+      res.status(201).json({ message: "User created successfully" })
     } catch (err) {
-        res.status(400).json({message: err.message})
+      console.error(err.message)
+      res.status(500).json({ message: "Internal server error" })
     }
-})
+  })
+  
 
 
 
