@@ -92,14 +92,18 @@ router.patch('/:regno', getlogin, async (req,res) => {
 
 
 //deleting one
-router.delete('/:regno', getlogin, async (req,res) => {
+router.delete('/:email', getlogin, async (req, res) => {
+    const { email } = req.params;
+    console.log(res.logindet,"hello")
     try {
-        await res.logindet.deleteOne()
-        res.json({ message: "deleted user"})
+      
+      // Use the rollno parameter to delete the user account
+      await res.logindet.deleteOne({ email });
+      res.json({ message: "Deleted user" });
     } catch (err) {
-        res.status(500).json({message: err.message})
+      res.status(500).json({ message: res.logindet });
     }
-})
+  });
 
 async function getlogin(req,res,next) {
     let logindet
