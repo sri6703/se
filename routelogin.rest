@@ -7,19 +7,16 @@ GET http://localhost:4201/login-page/203012
 
 ###
 
-POST http://localhost:4201/login-page
-Content-Type: application/json
-
-{
-    "name":"aksita", 
-    "regno":"cse20305",
-    "email":"aksita1@gmail.com",
-    "pwd":"abcd"
-}
+POST http://localhost:4201/login-page/:name/:regno/:email/:pwd
 
 ###
 
-DELETE http://localhost:4201/login-page/rajuuu@gmail.com
+PUT http://localhost:4201/login-page/:email/:currentPassword/:newPassword
+
+
+###
+
+DELETE http://localhost:4201/login-page/:email
 
 
 ###

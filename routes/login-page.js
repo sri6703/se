@@ -94,21 +94,72 @@ router.patch('/:regno', getlogin, async (req,res) => {
 //deleting one
 router.delete('/:email', getlogin, async (req, res) => {
     const { email } = req.params;
-    console.log(res.logindet,"hello")
     try {
       
       // Use the rollno parameter to delete the user account
       await res.logindet.deleteOne({ email });
       res.json({ message: "Deleted user" });
     } catch (err) {
-      res.status(500).json({ message: res.logindet });
+      res.status(500).json({ message: err.message });
     }
   });
+
+  router.put('/:email/:currentPassword/:newPassword', async (req, res) => {
+    const { email,currentPassword, newPassword} = req.params;
+  
+    try {
+      // Call the checkPwd function passing the currentPassword and newPassword
+      await checkPwd({ currentPassword, newPassword, email }, res);
+    } catch (err) {
+      res.status(500).json({ message: err.message });
+    }
+  });
+
+  //updating pwd
+  async function checkPwd({ currentPassword, newPassword, email }, res) {
+    try {
+      // Check if the user with the provided email exists
+      const user = await login.findOne({ email });
+      if (!user) {
+        return res.status(404).json({ message: "User not found." });
+      }
+  
+      // Check if the current password meets the criteria
+      const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+      if (!passwordRegex.test(currentPassword)) {
+        return res.status(400).json({ message: "Current password does not meet the criteria." });
+      }
+  
+      // Check if the user's current password matches the provided current password
+      if (user.pwd !== currentPassword) {
+        return res.status(400).json({ message: "Current password is incorrect." });
+      }
+  
+      // Check if the new password meets the criteria
+      if (!passwordRegex.test(newPassword)) {
+        return res.status(400).json({ message: "New password does not meet the criteria." });
+      }
+  
+      // Check if the new password is different from the current password
+      if (newPassword === currentPassword) {
+        return res.status(400).json({ message: "New password must be different from the current password." });
+      }
+  
+      // Update the password for the user
+      user.pwd = newPassword;
+      await user.save();
+  
+      res.json({ message: "Password updated successfully" });
+    } catch (err) {
+      res.status(500).json({ message: err.message });
+    }
+  }
+  
 
 async function getlogin(req,res,next) {
     let logindet
     try {
-      logindet = await login.findOne({ regno: req.params.regno })
+      logindet = await login.findOne({ email: req.params.email })
       if(logindet == null) {
         return res.status(404).json({message: "cannot find user"})
       }
