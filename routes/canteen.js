@@ -1,7 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const Menu = require('../models/menu');
+const cors = require('cors');
 
+// Enable CORS for all routes
+router.use(cors());
 // Get the menu for a canteen
 router.get('/', async (req, res) => {
   try {

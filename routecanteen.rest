@@ -6,19 +6,7 @@ GET http://localhost:4201/canteen
 
 GET http://localhost:4201/canteen/main/breakfast
 
-###
-
-GET http://localhost:4201/canteen/main/lunch
-
-###
-
-GET http://localhost:4201/canteen/main/dinner
-
-###
-
-GET http://localhost:4201/canteen/business/breakfast
-
-###
+ 
 
 GET http://localhost:4201/canteen/business/lunch
 
