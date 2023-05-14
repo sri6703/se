@@ -16,7 +16,7 @@ router.get('/', async (req, res) => {
 }); 
 
 // Get the menu for a canteen by canteen name and category
-router.get('/:canteenname/:category', async (req, res) => {
+router.get('/:category/:canteenname', async (req, res) => {
   const { canteenname, category } = req.params;
   try {
     const result = await Menu.find({ canteenname, category });

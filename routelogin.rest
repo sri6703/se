@@ -7,7 +7,29 @@ GET http://localhost:4201/login-page/203012
 
 ###
 
-POST http://localhost:4201/login-page/:name/:regno/:email/:pwd
+POST http://localhost:4201/login-page
+
+###
+
+#GET http://localhost:4201/login-page/203012/viji
+
+###
+
+PATCH http://localhost:4201/login-page/cse20305
+Content-Type: application/json
+
+{
+    "name":"aks"
+}
+
+###
+
+DELETE http://localhost:4201/login-page/:email
+
+
+###
+
+PUT http://localhost:4201/login-page/:email/:currentPassword/:newPassword
 
 ###
 #forgotpwd
@@ -21,29 +43,9 @@ GET http://localhost:4201/login-page/:id/:token
 
 ###
 
-POST http://localhost:4201/login-page/:password/:id/:token
+POST http://localhost:4201/login-page/:id/:token
 
 
 ###
 #forgot pwd 
 
-PUT http://localhost:4201/login-page/:email/:currentPassword/:newPassword
-
-
-###
-
-DELETE http://localhost:4201/login-page/:email
-
-
-###
-
-PATCH http://localhost:4201/login-page/cse20305
-Content-Type: application/json
-
-{
-    "name":"aks"
-}
-
-###
-
-GET http://localhost:4201/login-page/cse20310/abcde

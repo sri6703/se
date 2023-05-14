@@ -10,7 +10,7 @@ db.on('error',(error)=>console.error(error))
 db.once('open',()=>console.log("🦅 << Database Connected >> 🦅"))
 
 app.use(express.json())
-
+app.set('view engine', 'ejs');
 const subscribersRouter = require('./routes/login-page')
 app.use('/login-page',subscribersRouter)
 

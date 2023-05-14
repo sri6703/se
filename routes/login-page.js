@@ -1,15 +1,17 @@
 const express = require('express')
 const router = express.Router()
 const login = require('../models/login')
-const app = express();
-app.set("view engine", "ejs");
-app.use(express.urlencoded({ extended: false }));
 const jwt = require("jsonwebtoken");
 var nodemailer = require("nodemailer");
 const bcrypt = require("bcryptjs");
 const JWT_SECRET =
   "hvdvay6ert72839289()aiyg8t87qt72393293883uhefiuh78ttq3ifi78272jbkj?[]]pou89ywe";
 //getting all
+
+const app = express();
+app.set('view engine', 'ejs');
+router.use(express.urlencoded({ extended: false }));
+
 router.get('/',async (req,res) => {
     try {
         const logindet = await login.find()
@@ -51,6 +53,7 @@ router.post('/', async (req, res) => {
 
 
 //login
+/*
 router.get('/:regno/:pwd', getlogin, async (req,res) => {
     try {
         // find the user in the database
@@ -68,8 +71,7 @@ router.get('/:regno/:pwd', getlogin, async (req,res) => {
     }
 });
 
-
-    
+*/
 
 //updating one
 router.patch('/:regno', getlogin, async (req,res) => {
@@ -134,11 +136,11 @@ router.post("/:email", async (req, res) => {
     if (!oldUser) {
       return res.json({ status: "User Not Exists!!" });
     }
-    const secret = JWT_SECRET + oldUser.password;
+    const secret = JWT_SECRET + oldUser.pwd;
     const token = jwt.sign({ email: oldUser.email, id: oldUser._id }, secret, {
       expiresIn: "5m",
     });
-    const link = `http://localhost:4201/${oldUser._id}/${token}`;
+    const link = `http://localhost:4201/login-page/${oldUser._id}/${token}`;
     var transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
@@ -173,39 +175,39 @@ router.get("/:id/:token", async (req, res) => {
   if (!oldUser) {
     return res.json({ status: "User Not Exists!!" });
   }
-  const secret = JWT_SECRET + oldUser.password;
+  const secret = JWT_SECRET + oldUser.pwd;
   try {
     const verify = jwt.verify(token, secret);
-    res.render("index", { email: verify.email, status: "Not Verified" });
+    res.render("index", { email: verify.email, id: id, token: token, status: "Not Verified" });
   } catch (error) {
-    console.log(error);
     res.send("Not Verified");
   }
 });
 
-app.post("/password/:id/:token", async (req, res) => {
-  const { id, token ,password} = req.params;
 
+router.post("/:id/:token", async (req, res) => {
+  const { id, token } = req.params;
+  const { password } = req.body;
+  // Rest of your code
   const oldUser = await login.findOne({ _id: id });
   if (!oldUser) {
     return res.json({ status: "User Not Exists!!" });
   }
-  const secret = JWT_SECRET + oldUser.password;
+  const secret = JWT_SECRET + oldUser.pwd;
   try {
     const verify = jwt.verify(token, secret);
-    const encryptedPassword = await bcrypt.hash(password, 10);
-    await User.updateOne(
+    await login.updateOne(
       {
         _id: id,
       },
       {
         $set: {
-          password: encryptedPassword,
+          pwd: password,
         },
       }
     );
 
-    res.render("index", { email: verify.email, status: "verified" });
+    res.render("index", { email: verify.email, id: id, token: token, status: "verified" });
   } catch (error) {
     console.log(error);
     res.json({ status: "Something Went Wrong" });
