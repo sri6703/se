@@ -13,7 +13,7 @@ router.get('/', async (req, res) => {
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
-});
+}); 
 
 // Get the menu for a canteen by canteen name and category
 router.get('/:canteenname/:category', async (req, res) => {

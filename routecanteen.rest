@@ -4,7 +4,7 @@ GET http://localhost:4201/canteen
 
 ###
 
-GET http://localhost:4201/canteen/main/breakfast
+GET http://localhost:4201/canteen/:category/:canteenname
 
 ###
 
