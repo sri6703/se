@@ -33,12 +33,12 @@ POST http://localhost:4201/canteen
 Content-Type: application/json
 
 {
-      "foodid" : 168,
-      "name": "thayir sadham",
+      "foodid" : 150,
+      "name": "lemon sadham",
       "price": 5.99,
       "description": "Tdosa with chutny and sambar",
-      "category":"dinner",
-      "canteenname":"main"
+      "category":"lunch",
+      "canteenname":"business"
 }
 
 ###
@@ -47,7 +47,7 @@ DELETE http://localhost:4201/canteen/main/dinner/128
 
 ###
 
-PATCH http://localhost:4201/canteen/main/lunch/128
+PATCH http://localhost:4201/canteen/main/breakfast/128
 Content-Type: application/json
 
 {

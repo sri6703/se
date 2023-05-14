@@ -1,7 +1,14 @@
 const express = require('express')
 const router = express.Router()
 const login = require('../models/login')
-
+const app = express();
+app.set("view engine", "ejs");
+app.use(express.urlencoded({ extended: false }));
+const jwt = require("jsonwebtoken");
+var nodemailer = require("nodemailer");
+const bcrypt = require("bcryptjs");
+const JWT_SECRET =
+  "hvdvay6ert72839289()aiyg8t87qt72393293883uhefiuh78ttq3ifi78272jbkj?[]]pou89ywe";
 //getting all
 router.get('/',async (req,res) => {
     try {
@@ -10,7 +17,7 @@ router.get('/',async (req,res) => {
     } catch (err) {
         res.status(500).json({message: err.message})
     }
-})
+}) 
 
 //getting one
 router.get('/:regno',getlogin, (req,res) => {
@@ -115,6 +122,101 @@ router.delete('/:email', getlogin, async (req, res) => {
     }
   });
 
+
+
+
+
+//forgot password sending a mail code 
+router.post("/:email", async (req, res) => {
+  const { email } = req.params;
+  try {
+    const oldUser = await login.findOne({ email });
+    if (!oldUser) {
+      return res.json({ status: "User Not Exists!!" });
+    }
+    const secret = JWT_SECRET + oldUser.password;
+    const token = jwt.sign({ email: oldUser.email, id: oldUser._id }, secret, {
+      expiresIn: "5m",
+    });
+    const link = `http://localhost:4201/${oldUser._id}/${token}`;
+    var transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: "inirs3076@gmail.com",
+        pass: "wrakfhflxvcfsxay",
+      },
+    });
+
+    var mailOptions = {
+      from: "inirs3076@gmail.com",
+      to: "srini6703@gmail.com",
+      subject: "Password Reset",
+      text: link,
+    };
+
+    transporter.sendMail(mailOptions, function (error, info) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log("Email sent: " + info.response);
+      }
+    });
+    console.log(link);
+  } catch (error) { }
+});
+
+
+router.get("/:id/:token", async (req, res) => {
+  const { id, token } = req.params;
+  console.log(req.params);
+  const oldUser = await login.findOne({ _id: id });
+  if (!oldUser) {
+    return res.json({ status: "User Not Exists!!" });
+  }
+  const secret = JWT_SECRET + oldUser.password;
+  try {
+    const verify = jwt.verify(token, secret);
+    res.render("index", { email: verify.email, status: "Not Verified" });
+  } catch (error) {
+    console.log(error);
+    res.send("Not Verified");
+  }
+});
+
+app.post("/password/:id/:token", async (req, res) => {
+  const { id, token ,password} = req.params;
+
+  const oldUser = await login.findOne({ _id: id });
+  if (!oldUser) {
+    return res.json({ status: "User Not Exists!!" });
+  }
+  const secret = JWT_SECRET + oldUser.password;
+  try {
+    const verify = jwt.verify(token, secret);
+    const encryptedPassword = await bcrypt.hash(password, 10);
+    await User.updateOne(
+      {
+        _id: id,
+      },
+      {
+        $set: {
+          password: encryptedPassword,
+        },
+      }
+    );
+
+    res.render("index", { email: verify.email, status: "verified" });
+  } catch (error) {
+    console.log(error);
+    res.json({ status: "Something Went Wrong" });
+  }
+});
+
+
+
+//forgot password sending a mail code 
+
+
   //updating pwd
   async function checkPwd({ currentPassword, newPassword, email }, res) {
     try {
@@ -171,5 +273,6 @@ async function getlogin(req,res,next) {
     res.logindet = logindet
     next()
 }
+
 
 module.exports = router

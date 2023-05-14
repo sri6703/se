@@ -10,6 +10,22 @@ GET http://localhost:4201/login-page/203012
 POST http://localhost:4201/login-page/:name/:regno/:email/:pwd
 
 ###
+#forgotpwd
+POST http://localhost:4201/login-page/:email
+
+
+###
+
+GET http://localhost:4201/login-page/:id/:token
+
+
+###
+
+POST http://localhost:4201/login-page/:password/:id/:token
+
+
+###
+#forgot pwd 
 
 PUT http://localhost:4201/login-page/:email/:currentPassword/:newPassword
 
