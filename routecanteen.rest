@@ -38,7 +38,8 @@ Content-Type: application/json
       "price": 5.99,
       "description": "Tdosa with chutny and sambar",
       "category":"lunch",
-      "canteenname":"business"
+      "canteenname":"business",
+      "exist_quantity":400
 }
 
 ###
@@ -55,4 +56,6 @@ Content-Type: application/json
     "description": "Updated description",
     "price": 10.99
 }
+
+
 

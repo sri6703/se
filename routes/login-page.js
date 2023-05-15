@@ -53,8 +53,8 @@ router.post('/', async (req, res) => {
 
 
 //login
-/*
-router.get('/:regno/:pwd', getlogin, async (req,res) => {
+
+/*router.get('/:regno/:pwd', getlogin, async (req,res) => {
     try {
         // find the user in the database
         const user = await login.findOne({ regno: req.params.regno });
@@ -69,21 +69,19 @@ router.get('/:regno/:pwd', getlogin, async (req,res) => {
      catch (err) {
         res.status(500).json({ message: err.message });
     }
-});
-
-*/
+});*/
 
 //updating one
-router.patch('/:regno', getlogin, async (req,res) => {
+router.patch('/:email', getlogin, async (req,res) => {
     let message = '';
     if(req.body.name != null ){
         res.logindet.name=req.body.name;
         message = 'name';
     }
     
-    if(req.body.email != null ){
-        res.logindet.email=req.body.email;
-        message = 'email';
+    if(req.body.id != null ){
+        res.logindet.id=req.body.id;
+        message = 'id';
     }
 
     if(req.body.pwd != null ){
@@ -151,7 +149,7 @@ router.post("/:email", async (req, res) => {
 
     var mailOptions = {
       from: "inirs3076@gmail.com",
-      to: "srini6703@gmail.com",
+      to: email,
       subject: "Password Reset",
       text: link,
     };
@@ -229,7 +227,7 @@ router.post("/:id/:token", async (req, res) => {
       }
   
       // Check if the current password meets the criteria
-      const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+      const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+~`-]).{8,}$/;
       if (!passwordRegex.test(currentPassword)) {
         return res.status(400).json({ message: "Current password does not meet the criteria." });
       }
@@ -268,7 +266,7 @@ async function getlogin(req,res,next) {
         return res.status(404).json({message: "cannot find user"})
       }
     } catch (err) {
-        return res.status(500).json({message: err.message})
+        return res.status(500).json({message:err.message})
     }
 
 

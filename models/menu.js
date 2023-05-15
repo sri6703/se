@@ -24,6 +24,10 @@ const MenuItemSchema = new mongoose.Schema({
   canteenname :{
     type : String,
     required:true
+  },
+  exist_quantity :{
+    type : Number,
+    required:true
   }
 })
 

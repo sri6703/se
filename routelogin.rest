@@ -2,7 +2,7 @@
 GET http://localhost:4201/login-page/
 
 ###
-GET http://localhost:4201/login-page/203012
+GET http://localhost:4201/login-page/362
 
 
 ###
@@ -15,12 +15,8 @@ POST http://localhost:4201/login-page
 
 ###
 
-PATCH http://localhost:4201/login-page/cse20305
-Content-Type: application/json
+PATCH http://localhost:4201/login-page/:email
 
-{
-    "name":"aks"
-}
 
 ###
 
