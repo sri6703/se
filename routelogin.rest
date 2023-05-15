@@ -17,6 +17,12 @@ POST http://localhost:4201/login-page
 
 PATCH http://localhost:4201/login-page/:email
 
+<<<<<<< HEAD
+=======
+{ 
+    "name":"aks"
+}
+>>>>>>> e3e1baa0a0c87ca03ba23dbab6805a9862cd7822
 
 ###
 
