@@ -14,6 +14,9 @@ app.set('view engine', 'ejs');
 const subscribersRouter = require('./routes/login-page')
 app.use('/login-page',subscribersRouter)
 
+const adminRouter = require('./routes/admin-login-page')
+app.use('/admin-login-page',adminRouter)
+
 const canteenroute = require('./routes/canteen')
 app.use('/canteen',canteenroute)
 
