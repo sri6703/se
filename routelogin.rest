@@ -2,7 +2,7 @@
 GET http://localhost:4201/login-page/
 
 ###
-GET http://localhost:4201/login-page/362
+GET http://localhost:4201/login-page/:regno
 
 
 ###

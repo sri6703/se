@@ -22,9 +22,21 @@ router.get('/',async (req,res) => {
 }) 
 
 //getting one
-router.get('/:regno',getlogin, (req,res) => {
-    res.json(res.logindet)
-})
+router.get('/:regno', getloginByRegno, async (req, res) => { 
+  try {
+    const user = await login.findOne({ regno: req.params.regno });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
+
+    res.json({ name: user.name });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Internal server error.' });
+  }
+});
+
 
 //creating one
 router.post('/', async (req, res) => {
@@ -272,6 +284,20 @@ async function getlogin(req,res,next) {
 
     res.logindet = logindet
     next()
+}
+async function getloginByRegno(req, res, next) {
+  let logindet;
+  try {
+    logindet = await login.findOne({ regno: req.params.regno });
+    if (logindet == null) {
+      return res.status(404).json({ message: "Cannot find user" });
+    }
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
+
+  res.logindet = logindet;
+  next();
 }
 
 
