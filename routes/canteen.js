@@ -81,7 +81,7 @@ router.delete('/:canteenname/:category/:foodid', async (req, res) => {
 });
 
 // Update based on the food id
-router.patch('/:canteenname/:category/:foodid', async (req, res) => {
+router.patch('/', async (req, res) => {
   try {
     const { canteenname, category, foodid } = req.params;
     const foodItem = await Menu.findOne({ canteenname, category, foodid });
@@ -99,6 +99,47 @@ router.patch('/:canteenname/:category/:foodid', async (req, res) => {
 
     if (req.body.price != null) {
       foodItem.price = req.body.price;
+    }
+
+    const updatedFoodItem = await foodItem.save();
+    res.json({ message: `Food item updated successfully` });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+//patch for all
+router.patch('/:_id/:quantity', async (req, res) => {
+  try {
+    const { _id ,quantity} = req.params;
+    const foodItem = await Menu.findOne({ _id });
+    if (!foodItem) {
+      return res.status(404).json({ message: 'Food item not found' });
+    }
+
+    if (quantity != null) {
+      foodItem.exist_quantity = quantity;
+    }
+
+    const updatedFoodItem = await foodItem.save();
+    res.json({ message: `Food item updated successfully` });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+//patch for specific canteen and category
+router.patch('/:canteenname/:category/:_id/:quantity', async (req, res) => {
+  try {
+    const { canteenname, category, _id ,quantity} = req.params;
+    const foodItem = await Menu.findOne({ canteenname, category, _id });
+    if (!foodItem) {
+      return res.status(404).json({ message: 'Food item not found' });
+    }
+
+    if (quantity != null) {
+      foodItem.exist_quantity = quantity;
     }
 
     const updatedFoodItem = await foodItem.save();

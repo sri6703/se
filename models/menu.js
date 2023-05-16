@@ -10,7 +10,7 @@ const MenuItemSchema = new mongoose.Schema({
     required: true
   },
   price: {
-    type: Number,
+    type: Number, 
     required: true
   },
   description: {
@@ -23,6 +23,10 @@ const MenuItemSchema = new mongoose.Schema({
   },
   canteenname :{
     type : String,
+    required:true
+  },
+  exist_quantity :{
+    type : Number,
     required:true
   }
 })

@@ -1,6 +1,6 @@
 
 GET http://localhost:4201/canteen
-
+ 
 
 ###
 
@@ -38,7 +38,8 @@ Content-Type: application/json
       "price": 5.99,
       "description": "Tdosa with chutny and sambar",
       "category":"lunch",
-      "canteenname":"business"
+      "canteenname":"business",
+      "exist_quantity":400
 }
 
 ###
@@ -47,12 +48,15 @@ DELETE http://localhost:4201/canteen/main/dinner/128
 
 ###
 
-PATCH http://localhost:4201/canteen/main/breakfast/128
-Content-Type: application/json
+PATCH http://localhost:4201/canteen
 
-{
-    "name": "pasta",
-    "description": "Updated description",
-    "price": 10.99
-}
+
+###
+PATCH http://localhost:4201/canteen/:_id/:exist_quantity
+###
+
+#PATCH http://localhost:4201/canteen/:canteenname/:category/:_id/:exist_quantity
+
+###
+PATCH http://localhost:4201/canteen/business/lunch/6461e9dbe42bedaa4515a07f/400
 
