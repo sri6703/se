@@ -1,13 +1,14 @@
 
-GET http://localhost:4201/login-page/
+GET http://localhost:4201/admin-login-page/
 
 ###
-GET http://localhost:4201/login-page/362
+GET http://localhost:4201/admin-login-page/pri@gmail.com
 
 
 ###
 
-POST http://localhost:4201/login-page/
+POST http://localhost:4201/admin-login-page/priya/pri@gmail.com/qazx
+
 
 ###
 
@@ -24,7 +25,9 @@ Content-Type: application/json
 
 ###
 
-DELETE http://localhost:4201/login-page/srini6703@gmail.com
+DELETE http://localhost:4201/login-page/:email
+
+rs
 ###
 
 PUT http://localhost:4201/login-page/:email/:currentPassword/:newPassword
