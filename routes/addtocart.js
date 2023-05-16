@@ -3,21 +3,23 @@ const router = express.Router()
 const Cart = require('../models/cart')
 const User = require('../models/login');
 
-router.get('/:name', async (req, res) => {
+router.get('/:regno', async (req, res) => {
   try {
-    const user = await User.findOne({ name: req.params.name });
+    const user = await User.findOne({ regno: req.params.regno });
 
     if (!user) {
       return res.status(404).json({ message: 'User not found.' });
     }
 
-    const cartItems = await Cart.find({ user: user._id }).populate('user').populate('item');
+    const cartItems = await Cart.find({ user: req.params.regno }).populate('item');
     res.json(cartItems);
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Internal server error.' });
   }
 });
+
+
 
 router.get('/:name', async (req, res) => {
   try {
@@ -72,20 +74,21 @@ router.get('/:name', async (req, res) => {
 
 router.post('/', async (req, res) => {
   try {
-    const { user, item, quantity } = req.body;
+    const { userid, itemId, quantity } = req.body;
+    console.log(userid, itemId, quantity);
 
     const cartItem = await Cart.findOneAndUpdate(
-      { user, item },
+      { user: userid, item: itemId },
       { $inc: { quantity } },
-      { upsert: true }
+      { upsert: true, new: true }
     );
-
     res.status(201).json({ message: 'Added to cart successfully.' });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Internal server error.' });
   }
 });
+
 
 
   module.exports = router

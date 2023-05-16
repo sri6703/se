@@ -1,4 +1,4 @@
-GET http://localhost:4201/addtocart/srini
+GET http://localhost:4201/addtocart/362
 
 ###
 
@@ -7,11 +7,5 @@ GET http://localhost:4201/addtocart/srini
 ###
 
 POST http://localhost:4201/addtocart
-Content-Type: application/json
 
-{
-  "user": "644bf033d6fe2b366aba275e", 
-  "item": "644cc856a384990d73bacb75", 
-  "quantity":4
-}
 
