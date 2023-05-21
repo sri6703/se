@@ -15,7 +15,7 @@ router.use(express.urlencoded({ extended: false }));
 router.get('/',async (req,res) => {
     try {
         const logindet = await login.find()
-        res.json(logindet,"hello")
+        res.json({logindet,message:'hello'})
     } catch (err) {
         res.status(500).json({message: err.message})
     }
