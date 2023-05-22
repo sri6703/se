@@ -29,7 +29,7 @@ router.get('/:category/:canteenname', async (req, res) => {
 // Create a new menu
 router.post('/', async (req, res) => {
   try {
-    const { foodid, name, price, description, category, canteenname } = req.body;
+    const { foodid, name, price, description, category, canteenname,exist_quantity } = req.body;
 
     // Check if food already exists based on foodid
     const existingFood = await Menu.findOne({ foodid });
@@ -56,6 +56,7 @@ router.post('/', async (req, res) => {
       description,
       category,
       canteenname,
+      exist_quantity
     });
 
     await menu.save();
