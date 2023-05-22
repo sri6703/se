@@ -75,7 +75,6 @@ router.get('/:name', async (req, res) => {
 router.post('/', async (req, res) => {
   try {
     const { userid, itemId, quantity } = req.body;
-    console.log(userid, itemId, quantity);
 
     const cartItem = await Cart.findOneAndUpdate(
       { user: userid, item: itemId },
