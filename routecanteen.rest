@@ -8,27 +8,6 @@ GET http://localhost:4201/canteen/:category/:canteenname
 
 ###
 
-
-GET http://localhost:4201/canteen/lunch/business
-
-###
-
-GET http://localhost:4201/canteen/business/dinner
-
-###
-
-GET http://localhost:4201/canteen/it/breakfast
-
-###
-
-GET http://localhost:4201/canteen/it/lunch
-
-###
-
-GET http://localhost:4201/canteen/it/dinner
-
-###
-
 POST http://localhost:4201/canteen
 
 ###
@@ -44,8 +23,8 @@ PATCH http://localhost:4201/canteen
 PATCH http://localhost:4201/canteen/150/:exist_quantity
 ###
 
-#PATCH http://localhost:4201/canteen/:canteenname/:category/:_id/:exist_quantity
+PATCH http://localhost:4201/canteen/:_id/:exist_quantity
 
 ###
-PATCH http://localhost:4201/canteen/business/lunch/6461e9dbe42bedaa4515a07f/400
+#PATCH http://localhost:4201/canteen/646cf403fa23875ee1233a85/112
 
