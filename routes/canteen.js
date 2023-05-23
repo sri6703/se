@@ -31,6 +31,12 @@ router.post('/', async (req, res) => {
   try {
     const { foodid, name, price, description, category, canteenname,exist_quantity } = req.body;
 
+    // Check if foodid is already used
+    const existingFoodId = await Menu.findOne({ foodid });
+    if (existingFoodId) {
+      return res.status(400).json({ message: "Food ID must be unique" });
+    }
+    
     // Check if food already exists based on foodid
     const existingFood = await Menu.findOne({ foodid });
     if (existingFood) {
@@ -41,6 +47,7 @@ router.post('/', async (req, res) => {
       if (existingFood.category === category && existingFood.canteenname === canteenname) {
         return res.status(400).json({ message: "Food already exists" });
       }
+
     }
 
     // Check if the item with the same name exists in the same canteen
@@ -82,33 +89,34 @@ router.delete('/:canteenname/:category/:foodid', async (req, res) => {
 });
 
 // Update based on the food id
-router.patch('/', async (req, res) => {
+router.patch('/:foodid', async (req, res) => {
   try {
-    const { canteenname, category, foodid } = req.params;
-    const foodItem = await Menu.findOne({ canteenname, category, foodid });
+    const { foodid } = req.params;
+    const { description, price } = req.body;
+    
+    const foodItem = await Menu.findOne({ foodid });
     if (!foodItem) {
       return res.status(404).json({ message: 'Food item not found' });
     }
 
-    if (req.body.name != null) {
-      foodItem.name = req.body.name;
+    if (description != null) {
+      foodItem.description = description;
     }
 
-    if (req.body.description != null) {
-      foodItem.description = req.body.description;
-    }
-
-    if (req.body.price != null) {
-      foodItem.price = req.body.price;
+    if (price != null) {
+      foodItem.price = price;
     }
 
     const updatedFoodItem = await foodItem.save();
-    res.json({ message: `Food item updated successfully` });
+    res.json({ message: 'Food item updated successfully', updatedFoodItem });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Internal server error' });
   }
 });
+
+
+
 
 //patch for all
 router.patch('/:_id/:quantity', async (req, res) => {
