@@ -1,11 +1,27 @@
-GET http://localhost:4201/addtocart/362
+GET http://localhost:4201/addtocart/:regno
 
 ###
 
-GET http://localhost:4201/addtocart/srini
+DELETE http://localhost:4201/addtocart/:itemId
+
+###
+
+DELETE http://localhost:4201/addtocart
+
+###
+
+GET http://localhost:4201/addtocart/:name
 
 ###
 
 POST http://localhost:4201/addtocart
+
+###
+
+PATCH http://localhost:4201/addtocart/:itemId
+
+###
+
+GET http://localhost:4201/addtocart/:itemId
 
 

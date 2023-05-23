@@ -1,6 +1,6 @@
-const express = require('express')
-const router = express.Router()
-const Cart = require('../models/cart')
+const express = require('express');
+const router = express.Router();
+const Cart = require('../models/cart');
 const User = require('../models/login');
 
 router.get('/:regno', async (req, res) => {
@@ -19,7 +19,29 @@ router.get('/:regno', async (req, res) => {
   }
 });
 
+router.delete('/:itemId', async (req, res) => {
+  try {
+    const { itemId } = req.params;
+    const deletedItem = await Cart.findOneAndDelete({ _id: itemId });
+    if (!deletedItem) {
+      return res.status(404).json({ message: 'Item not found.' });
+    }
+    res.json({ message: 'Item deleted successfully.' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Internal server error.' });
+  }
+});
 
+router.delete('/', async (req, res) => {
+  try {
+    await Cart.deleteMany({});
+    res.json({ message: 'All items deleted successfully.' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Internal server error.' });
+  }
+});
 
 router.get('/:name', async (req, res) => {
   try {
@@ -69,9 +91,6 @@ router.get('/:name', async (req, res) => {
   }
 });
 
-
-
-
 router.post('/', async (req, res) => {
   try {
     const { userid, itemId, quantity } = req.body;
@@ -88,7 +107,45 @@ router.post('/', async (req, res) => {
   }
 });
 
+router.patch('/:itemId', async (req, res) => {
+  try {
+    const { itemId } = req.params;
+    const { existing_quantity } = req.body;
+
+    const updatedItem = await Cart.findOneAndUpdate(
+      { _id: itemId },
+      { existing_quantity },
+      { new: true }
+    );
+
+    if (!updatedItem) {
+      return res.status(404).json({ message: 'Item not found.' });
+    }
+
+    res.json({ message: 'Item updated successfully.' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Internal server error.' });
+  }
+});
+
+router.get('/:itemId', async (req, res) => {
+  try {
+    const { itemId } = req.params;
+    const cartItem = await Cart.findOne({ _id: itemId }).populate('item');
+
+    if (!cartItem) {
+      return res.status(404).json({ message: 'Item not found in the cart.' });
+    }
+
+    const existingQuantity = cartItem.item.exist_quantity;
+    res.json({ existingQuantity });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Internal server error.' });
+  }
+});
 
 
-  module.exports = router
 
+module.exports = router;
