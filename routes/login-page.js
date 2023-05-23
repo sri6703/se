@@ -84,30 +84,48 @@ router.post('/', async (req, res) => {
 });*/
 
 //updating one
-router.patch('/:email', getlogin, async (req,res) => {
-    let message = '';
-    if(req.body.name != null ){
-        res.logindet.name=req.body.name;
-        message = 'name';
-    }
-    
-    if(req.body.id != null ){
-        res.logindet.id=req.body.id;
-        message = 'id';
-    }
+router.patch('/:email', getlogin, async (req, res) => {
+  let message = '';
 
-    if(req.body.pwd != null ){
-        res.logindet.pwd=req.body.pwd;
-        message = 'password';
-    }
+  if (req.body.name != null) {
+    res.logindet.name = req.body.name;
+    message = 'name';
+  }
 
-    try {
-        const updatedlogin = await res.logindet.save();
-        res.json({ message: `${message} updated successfully.` });
-    } catch (err) {
-        res.status(400).json({ message: err.message});
-    }
+  if (req.body.id != null) {
+    res.logindet.id = req.body.id;
+    message = 'id';
+  }
+
+  if (req.body.pwd != null) {
+    res.logindet.pwd = req.body.pwd;
+    message = 'password';
+  }
+
+  // Additional parameters
+  if (req.body.phoneno != null) {
+    res.logindet.phoneno = req.body.phoneno;
+    message = 'phone number';
+  }
+
+  if (req.body.address != null) {
+    res.logindet.address = req.body.address;
+    message = 'address';
+  }
+
+  if (req.body.gender != null) {
+    res.logindet.gender = req.body.gender;
+    message = 'gender';
+  }
+
+  try {
+    const updatedlogin = await res.logindet.save();
+    res.json({ message: `${message} updated successfully.` });
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
 });
+
 
 
 //deleting one

@@ -17,10 +17,6 @@ POST http://localhost:4201/login-page/
 
 PATCH http://localhost:4201/login-page/:email
 
-{ 
-    "name":"aks"
-}
-
 ###
 
 DELETE http://localhost:4201/login-page/srini6703@gmail.com
