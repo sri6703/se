@@ -19,6 +19,26 @@ router.get('/:regno', async (req, res) => {
   }
 });
 
+router.get('/:regno/:itemid', async (req, res) => {
+  try {
+    const { regno, itemid } = req.params;
+
+    const user = await User.findOne({ regno });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
+
+    const cartItem = await Cart.findOne({ user: regno, item: itemid });
+    const quantity = cartItem ? cartItem.quantity : 0;
+
+    res.json({ quantity });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Internal server error.' });
+  }
+});
+
+
 router.delete('/:itemId', async (req, res) => {
   try {
     const { itemId } = req.params;
@@ -42,6 +62,7 @@ router.delete('/', async (req, res) => {
     res.status(500).json({ message: 'Internal server error.' });
   }
 });
+
 
 router.get('/:name', async (req, res) => {
   try {
@@ -95,11 +116,18 @@ router.post('/', async (req, res) => {
   try {
     const { userid, itemId, quantity } = req.body;
 
-    const cartItem = await Cart.findOneAndUpdate(
-      { user: userid, item: itemId },
-      { $inc: { quantity } },
-      { upsert: true, new: true }
-    );
+    const existingCartItem = await Cart.findOne({ user: userid, item: itemId });
+
+    if (existingCartItem) {
+      // If the item already exists in the cart, update the quantity
+      existingCartItem.quantity = quantity;
+      await existingCartItem.save();
+    } else {
+      // If the item doesn't exist in the cart, create a new cart item
+      const newCartItem = new Cart({ user: userid, item: itemId, quantity });
+      await newCartItem.save();
+    }
+
     res.status(201).json({ message: 'Added to cart successfully.' });
   } catch (err) {
     console.error(err);
@@ -107,20 +135,20 @@ router.post('/', async (req, res) => {
   }
 });
 
+
 router.patch('/:itemId', async (req, res) => {
   try {
     const { itemId } = req.params;
     const { existing_quantity } = req.body;
 
-    const updatedItem = await Cart.findOneAndUpdate(
-      { _id: itemId },
-      { existing_quantity },
-      { new: true }
-    );
+    const existingCartItem = await Cart.findById(itemId);
 
-    if (!updatedItem) {
+    if (!existingCartItem) {
       return res.status(404).json({ message: 'Item not found.' });
     }
+
+    existingCartItem.quantity = existing_quantity;
+    await existingCartItem.save();
 
     res.json({ message: 'Item updated successfully.' });
   } catch (err) {
@@ -128,6 +156,7 @@ router.patch('/:itemId', async (req, res) => {
     res.status(500).json({ message: 'Internal server error.' });
   }
 });
+
 
 router.get('/:itemId', async (req, res) => {
   try {
