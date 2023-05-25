@@ -1,4 +1,3 @@
-
 GET http://localhost:4201/login-page/
 
 ###
@@ -15,11 +14,16 @@ POST http://localhost:4201/login-page/
 
 ###
 
-PATCH http://localhost:4201/login-page/:email
+PATCH http://localhost:4201/login-page/:regno
 
 ###
 
-DELETE http://localhost:4201/login-page/srini6703@gmail.com
+PATCH http://localhost:4201/login-page/:regno/:pwd
+
+###
+
+DELETE http://localhost:4201/login-page/:regno
+
 ###
 
 PUT http://localhost:4201/login-page/:email/:currentPassword/:newPassword
