@@ -29,8 +29,8 @@ router.get('/:category/:canteenname', async (req, res) => {
 // Create a new menu
 router.post('/', async (req, res) => {
   try {
-    const { foodid, name, price, description, category, canteenname,exist_quantity } = req.body;
-
+    const { foodid, name, price, description, category, canteenname,exist_quantity,image } = req.body;
+    console.log(req.body)
     // Check if foodid is already used
     const existingFoodId = await Menu.findOne({ foodid });
     if (existingFoodId) {
@@ -63,7 +63,8 @@ router.post('/', async (req, res) => {
       description,
       category,
       canteenname,
-      exist_quantity
+      exist_quantity,
+      image,
     });
 
     await menu.save();
@@ -92,7 +93,7 @@ router.delete('/:canteenname/:category/:foodid', async (req, res) => {
 router.patch('/:foodid', async (req, res) => {
   try {
     const { foodid } = req.params;
-    const { description, price } = req.body;
+    const { description, price,image} = req.body;
     
     const foodItem = await Menu.findOne({ foodid });
     if (!foodItem) {
@@ -105,6 +106,9 @@ router.patch('/:foodid', async (req, res) => {
 
     if (price != null) {
       foodItem.price = price;
+    }
+    if (image != null) {
+      foodItem.image = image;
     }
 
     const updatedFoodItem = await foodItem.save();

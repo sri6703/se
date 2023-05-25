@@ -28,6 +28,16 @@ const MenuItemSchema = new mongoose.Schema({
   exist_quantity :{
     type : Number,
     required:true
+  },
+  rating : 
+  {
+    type : Number,
+    required:false
+  },
+  image :
+  {
+    type : String,
+    required:true
   }
 })
 
