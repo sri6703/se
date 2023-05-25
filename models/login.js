@@ -19,11 +19,11 @@ const loginSchema = new mongoose.Schema({
     },
     phoneno: {
         type: Number,
-        required: false
+        required: true
     },
     gender: {
         type: String,
-        required: false
+        required: true
     },
     address: {
         type: String,
