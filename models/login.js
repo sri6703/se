@@ -27,7 +27,19 @@ const loginSchema = new mongoose.Schema({
     },
     address: {
         type: String,
-        required: true
+        required: false
+    },
+    newpwd: {
+        type: String,
+        required: false
+    },
+    confpwd: {
+        type: String,
+        required: false
+    },
+    delpwd: {
+        type: String,
+        required: false
     }
 })
 

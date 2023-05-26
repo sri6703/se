@@ -3,14 +3,19 @@ const router = express.Router()
 const login = require('../models/login')
 const jwt = require("jsonwebtoken");
 var nodemailer = require("nodemailer");
+const bodyParser = require('body-parser');
 const bcrypt = require("bcryptjs");
 const JWT_SECRET =
   "hvdvay6ert72839289()aiyg8t87qt72393293883uhefiuh78ttq3ifi78272jbkj?[]]pou89ywe";
 //getting all
 
+
+
 const app = express();
 app.set('view engine', 'ejs');
 router.use(express.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 router.get('/',async (req,res) => {
     try {
@@ -30,7 +35,8 @@ router.get('/:regno', getloginByRegno, async (req, res) => {
       return res.status(404).json({ message: 'User not found.' });
     }
 
-    res.json({ name: user.name });
+    res.json({ regno: user.regno, name: user.name, email: user.email, phoneno: user.phoneno, 
+               address: user.address, gender: user.gender});
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Internal server error.' });
@@ -84,7 +90,7 @@ router.post('/', async (req, res) => {
 });*/
 
 //updating one
-router.patch('/:email', getlogin, async (req, res) => {
+router.patch('/:regno', getlogin, async (req, res) => {
   let message = '';
 
   if (req.body.name != null) {
@@ -92,14 +98,15 @@ router.patch('/:email', getlogin, async (req, res) => {
     message = 'name';
   }
 
-  if (req.body.id != null) {
-    res.logindet.id = req.body.id;
-    message = 'id';
+  if (req.body.email != null) {
+    res.logindet.id = req.body.email;
+    message = 'email';
   }
 
-  if (req.body.pwd != null) {
-    res.logindet.pwd = req.body.pwd;
-    message = 'password';
+
+  if (req.body.address != null) {
+    res.logindet.address = req.body.address;
+    message = 'address';
   }
 
   // Additional parameters
@@ -108,10 +115,7 @@ router.patch('/:email', getlogin, async (req, res) => {
     message = 'phone number';
   }
 
-  if (req.body.address != null) {
-    res.logindet.address = req.body.address;
-    message = 'address';
-  }
+  
 
   if (req.body.gender != null) {
     res.logindet.gender = req.body.gender;
@@ -122,38 +126,50 @@ router.patch('/:email', getlogin, async (req, res) => {
     const updatedlogin = await res.logindet.save();
     res.json({ message: `${message} updated successfully.` });
   } catch (err) {
+    
     res.status(400).json({ message: err.message });
   }
 });
 
+//change password
+router.patch('/:regno/:pwd', getlogin, checkPwd, async (req, res) => {
+  try {
+    const newPassword = req.body.newpwd;
+    // Retrieve the user based on regno
+    const user = await login.findOne({ regno: req.params.regno });
+    // Update the password
+    user.pwd = newPassword;
 
+    // Save the updated user
+    await user.save();
+
+  } catch (err) {
+    console.error('Error updating password:', err);
+    console.log(newPassword);
+    alert(err);
+    return res.status(500).json({ message: 'Failed to update password' });
+  }
+});
 
 //deleting one
-router.delete('/:email', getlogin, async (req, res) => {
-    const { email } = req.params;
+router.delete('/:regno', getlogin, async (req, res) => {
+    
     try {
-      
+      const user = await login.findOne({ regno: req.params.regno });
+      const deletepwd  = req.body.delpwd;
+    // Check if the provided password matches the user's stored password
+    if ( deletepwd != user.pwd) {
+      return res.status(401).json({ message: "incorrect pwd"});
+    }
+    else{
       // Use the rollno parameter to delete the user account
-      await res.logindet.deleteOne({ email });
+      await res.logindet.deleteOne({ regno: req.params.regno });
       res.json({ message: "Deleted user" });
+    }
     } catch (err) {
       res.status(500).json({ message: err.message });
     }
   });
-
-  router.put('/:email/:currentPassword/:newPassword', async (req, res) => {
-    const { email,currentPassword, newPassword} = req.params;
-  
-    try {
-      // Call the checkPwd function passing the currentPassword and newPassword
-      await checkPwd({ currentPassword, newPassword, email }, res);
-    } catch (err) {
-      res.status(500).json({ message: err.message });
-    }
-  });
-
-
-
 
 
 //forgot password sending a mail code 
@@ -246,9 +262,9 @@ router.post("/:id/:token", async (req, res) => {
 
 //forgot password sending a mail code 
 
-
-  //updating pwd
-  async function checkPwd({ currentPassword, newPassword, email }, res) {
+/*
+  //updating pwd for forgot pwd
+  async function checkPwd(req, res) {
     try {
       // Check if the user with the provided email exists
       const user = await login.findOne({ email });
@@ -281,17 +297,65 @@ router.post("/:id/:token", async (req, res) => {
       user.pwd = newPassword;
       await user.save();
   
-      res.json({ message: "Password updated successfully" });
+      return res.status(200).json({ message: "Password updated successfully" });
     } catch (err) {
       res.status(500).json({ message: err.message });
     }
   }
-  
+  */
+//updating pwd for edit profile
+async function checkPwd(req, res,next) {
+  try {
+    // Check if the user with the provided email exists
+    const currentPassword = req.params.pwd;
+    const newPassword = req.body.newpwd;
+    const confPassword = req.body.confpwd;
+    const user = await login.findOne({ regno: req.params.regno });
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    //check if new-pwd and conf-pwd are same
+    if (newPassword !== confPassword) {
+      return res.status(400).json({ message: "New password and confirmed password do not match." });
+}
+
+
+    // Check if the current password meets the criteria
+    const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+~`-]).{8,}$/;
+    if (!passwordRegex.test(currentPassword)) {
+      return res.status(400).json({ message: "Current password does not meet the criteria." });
+    }
+
+    // Check if the user's current password matches the provided current password
+    if (user.pwd !== currentPassword) {
+      return res.status(400).json({ message: "Current password is incorrect." });
+    }
+
+    // Check if the new password meets the criteria
+    if (!passwordRegex.test(newPassword)) {
+      return res.status(400).json({ message: "New password does not meet the criteria." });
+    }
+
+    // Check if the new password is different from the current password
+    if (newPassword === currentPassword) {
+      return res.status(400).json({ message: "New password must be different from the current password." });
+    }
+
+    // Update the password for the user
+    user.pwd = newPassword;
+    await user.save();
+
+    res.json({ message: "Password updated successfully" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+}
 
 async function getlogin(req,res,next) {
     let logindet
     try {
-      logindet = await login.findOne({ email: req.params.email })
+      logindet = await login.findOne({ regno: req.params.regno })
       if(logindet == null) {
         return res.status(404).json({message: "cannot find user"})
       }
