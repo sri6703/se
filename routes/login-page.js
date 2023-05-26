@@ -181,7 +181,7 @@ router.post("/:email", async (req, res) => {
       from: "inirs3076@gmail.com",
       to: email,
       subject: "Password Reset",
-      text: link,
+      text: `Hello AVV canteen user !!,\n\nClick the link below to reset your password:\n${link}`,    
     };
 
     transporter.sendMail(mailOptions, function (error, info) {
