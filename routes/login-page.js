@@ -102,7 +102,7 @@ router.patch('/:regno', getlogin, async (req, res) => {
   }
 
   if (req.body.email != null) {
-    res.logindet.id = req.body.email;
+    res.logindet.email = req.body.email;
     message = 'email';
   }
 

@@ -26,7 +26,7 @@ DELETE http://localhost:4201/login-page/:regno
 
 ###
 
-PUT http://localhost:4201/login-page/:email/:currentPassword/:newPassword
+#PUT http://localhost:4201/login-page/:email/:currentPassword/:newPassword
 
 ###
 #forgotpwd
