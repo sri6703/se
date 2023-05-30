@@ -51,12 +51,10 @@ router.post('/', async (req, res) => {
       if (emailExists) {
         return res.status(201).json({ message: "Email is already registered" })
       }
-
       const regnoExists = await login.findOne({ regno: req.body.regno })
       if (regnoExists) {
-        return res.status(201).json({ message: "user is already registered" })
+        return res.status(201).json({ message: "regno is already registered" })
       }
-  
       const logindet = new login({
         name : req.body.name,
         regno : req.body.regno,
@@ -104,7 +102,7 @@ router.patch('/:regno', getlogin, async (req, res) => {
   }
 
   if (req.body.email != null) {
-    res.logindet.id = req.body.email;
+    res.logindet.email = req.body.email;
     message = 'email';
   }
 
@@ -162,13 +160,14 @@ router.delete('/:regno', getlogin, async (req, res) => {
     try {
       const user = await login.findOne({ regno: req.params.regno });
       const deletepwd  = req.body.delpwd;
+      console.log(deletepwd)
     // Check if the provided password matches the user's stored password
     if ( deletepwd != user.pwd) {
       return res.status(401).json({ message: "incorrect pwd"});
     }
     else{
       // Use the rollno parameter to delete the user account
-      await res.logindet.deleteOne({ regno: req.params.regno });
+      await login.deleteOne({ regno: req.params.regno });
       res.json({ message: "Deleted user" });
     }
     } catch (err) {
@@ -202,7 +201,7 @@ router.post("/:email", async (req, res) => {
       from: "inirs3076@gmail.com",
       to: email,
       subject: "Password Reset",
-      text: link,
+      text: `Hello AVV canteen user !!,\n\nClick the link below to reset your password:\n${link}`,    
     };
 
     transporter.sendMail(mailOptions, function (error, info) {
