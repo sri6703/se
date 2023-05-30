@@ -51,6 +51,11 @@ router.post('/', async (req, res) => {
       if (emailExists) {
         return res.status(201).json({ message: "Email is already registered" })
       }
+
+      const regnoExists = await login.findOne({ regno: req.body.regno })
+      if (regnoExists) {
+        return res.status(201).json({ message: "user is already registered" })
+      }
   
       const logindet = new login({
         name : req.body.name,
