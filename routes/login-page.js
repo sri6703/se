@@ -209,6 +209,7 @@ router.post("/:email", async (req, res) => {
         console.log(error);
       } else {
         console.log("Email sent: " + info.response);
+        
       }
     });
     console.log(link);
