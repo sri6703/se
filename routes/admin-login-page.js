@@ -1,11 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const AdminLogin = require('../models/admin-login');
+const bodyParser = require('body-parser');
 
 
 const app = express();
 app.set('view engine', 'ejs');
 router.use(express.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 router.get('/',async (req,res) => {
     try {
@@ -70,18 +73,22 @@ router.post('/:name/:email/:pwd', async (req, res) => {
 //updating one
 router.patch('/:email', getlogin, async (req,res) => {
     let message = '';
+    const user = await AdminLogin.findOne({ email: req.params.email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
     if(req.body.name != null ){
-        res.logindet.name=req.body.name;
+        user.name=req.body.name;
         message = 'name';
     }
 
     if(req.body.pwd != null ){
-        res.logindet.pwd=req.body.pwd;
+        user.pwd=req.body.pwd;
         message = 'password';
     }
 
     try {
-        const updatedlogin = await res.logindet.save();
+        const updatedlogin = await user.save();
         res.json({ message: `${message} updated successfully.` });
     } catch (err) {
         res.status(400).json({ message: err.message});
@@ -212,13 +219,13 @@ router.post("/:id/:token", async (req, res) => {
   async function checkPwd({ currentPassword, newPassword, email }, res) {
     try {
       // Check if the user with the provided email exists
-      const user = await login.findOne({ email });
+      const user = await AdminLogin.findOne({ email });
       if (!user) {
         return res.status(404).json({ message: "User not found." });
       }
   
       // Check if the current password meets the criteria
-      const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+      const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+~`-]).{8,}$/;
       if (!passwordRegex.test(currentPassword)) {
         return res.status(400).json({ message: "Current password does not meet the criteria." });
       }
