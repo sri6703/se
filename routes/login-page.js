@@ -4,7 +4,6 @@ const login = require('../models/login')
 const jwt = require("jsonwebtoken");
 var nodemailer = require("nodemailer");
 const bodyParser = require('body-parser');
-const bcrypt = require("bcryptjs");
 const JWT_SECRET =
   "hvdvay6ert72839289()aiyg8t87qt72393293883uhefiuh78ttq3ifi78272jbkj?[]]pou89ywe";
 //getting all
@@ -209,7 +208,7 @@ router.post("/:email", async (req, res) => {
         console.log(error);
       } else {
         console.log("Email sent: " + info.response);
-        
+
       }
     });
     console.log(link);
