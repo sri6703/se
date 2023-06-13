@@ -28,4 +28,31 @@ describe('GET /admin-login-page/:email', () => {
     // Add assertions to check the response body
   });
 });
+describe('GET /login-page/:regno', () => {
+  it('should return the login page for the given registration number', async () => {
+    const regno = 'cb.en.u4cse20348';
+    const res = await request(app).get(`/login-page/${regno}`);
+    expect(res.statusCode).toBe(200);
+    // Add assertions to check the response body
+  });
+});
+describe('GET /canteen/:category/:canteenname', () => {
+  it('should return the canteen details for the given lunch and item', async () => {
+    const lunch = 'lunch';
+    const item = 'it';
+    const res = await request(app).get(`/canteen/${lunch}/${item}`);
+    expect(res.statusCode).toBe(200);
+    // Add assertions to check the response body
+  });
+});
+describe('GET /admin-login-page/:email', () => {
+  it('should return the admin details with the given email', async () => {
+    const email = 'swathi@gmail.com';
+    const res = await request(app).get(`/admin-login-page/${email}`);
+    expect(res.statusCode).toBe(200);
+    // Add assertions to check the response body
+  });
+});
+
+
 // Add more test cases for the remaining routes...
