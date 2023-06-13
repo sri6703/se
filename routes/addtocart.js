@@ -3,26 +3,42 @@ const router = express.Router();
 const Cart = require('../models/cart');
 const User = require('../models/login');
 
+// router.get('/:regno', async (req, res) => {
+//   try {
+//     const { regno } = req.params;
+
+//     const user = await User.findOne({ regno });
+//     if (!user) {
+//       return res.status(404).json({ message: 'User not found.' });
+//     }
+
+//     const cartItems = await Cart.find({ user: regno }).populate('item');
+//     const formattedItems = cartItems.map((cartItem) => {
+//       return {
+//         name: user.name,
+//         itemName: cartItem.item.name,
+//         price: cartItem.item.price,
+//         quantity: cartItem.quantity
+//       };
+// //     });
+
+//     res.json(formattedItems);
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ message: 'Internal server error.' });
+//   }
+// });
+
 router.get('/:regno', async (req, res) => {
   try {
-    const { regno } = req.params;
+    const user = await User.findOne({ regno: req.params.regno });
 
-    const user = await User.findOne({ regno });
     if (!user) {
       return res.status(404).json({ message: 'User not found.' });
     }
 
-    const cartItems = await Cart.find({ user: regno }).populate('item');
-    const formattedItems = cartItems.map((cartItem) => {
-      return {
-        name: user.name,
-        itemName: cartItem.item.name,
-        price: cartItem.item.price,
-        quantity: cartItem.quantity
-      };
-    });
-
-    res.json(formattedItems);
+    const cartItems = await Cart.find({ user: req.params.regno }).populate('item');
+    res.json(cartItems);
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Internal server error.' });
