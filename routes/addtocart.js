@@ -6,19 +6,30 @@ const Order = require('../models/order');
 
 router.get('/:regno', async (req, res) => {
   try {
-    const user = await User.findOne({ regno: req.params.regno });
+    const { regno } = req.params;
 
+    const user = await User.findOne({ regno });
     if (!user) {
       return res.status(404).json({ message: 'User not found.' });
     }
 
-    const cartItems = await Cart.find({ user: req.params.regno }).populate('item');
-    res.json(cartItems);
+    const cartItems = await Cart.find({ user: regno }).populate('item');
+    const formattedItems = cartItems.map((cartItem) => {
+      return {
+        name: user.name,
+        itemName: cartItem.item.name,
+        price: cartItem.item.price,
+        quantity: cartItem.quantity
+      };
+    });
+
+    res.json(formattedItems);
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Internal server error.' });
   }
 });
+
 
 router.get('/:regno/:itemid', async (req, res) => {
   try {
@@ -123,7 +134,7 @@ router.post('/', async (req, res) => {
       // If the item already exists in the cart, update the quantity
       existingCartItem.quantity = quantity;
       await existingCartItem.save();
-    } else {
+    } else { 
       // If the item doesn't exist in the cart, create a new cart item
       const newCartItem = new Cart({ user: userid, item: itemId, quantity });
       await newCartItem.save();
@@ -176,6 +187,36 @@ router.get('/:itemId', async (req, res) => {
   }
 });
 
+// Assuming you have the necessary HTML template to display the items in the billing page
+
+router.get('/:userId', async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const user = await User.findOne({ _id: userId });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
+
+    const cartItems = await Cart.find({ user: userId }).populate('item');
+
+    if (!cartItems.length) {
+      return res.status(404).json({ message: 'No items found for the user.' });
+    }
+
+    const items = cartItems.map((cartItem) => ({
+      itemName: cartItem.item.name,
+      price: cartItem.item.price,
+      quantity: cartItem.quantity,
+    }));
+
+    res.render('billing', { user, items }); // Render the billing page with user and items data
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Internal server error.' });
+  }
+});
 
 
 

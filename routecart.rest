@@ -1,15 +1,15 @@
-GET http://localhost:4201/addtocart/362
+GET http://localhost:4201/addtocart/150
 
 ###
 
-GET http://localhost:4201/addtocart//:regno/:itemid
+GET http://localhost:4201/addtocart/:regno/:itemid
 
 ###
 
 DELETE http://localhost:4201/addtocart/:itemId
 
 ###
-
+ 
 DELETE http://localhost:4201/addtocart
 
 ###
