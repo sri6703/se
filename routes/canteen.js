@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Menu = require('../models/menu');
 const cors = require('cors');
+const Cart = require('../models/cart');
 
 // Enable CORS for all routes
 router.use(cors());
@@ -161,5 +162,33 @@ router.patch('/:_id/:exist_quantity', async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
+
+router.get('/cart/most-ordered', async (req, res) => {
+  try {
+    const mostOrderedItem = await Cart.aggregate([
+      {
+        $group: {
+          foodid: '$item',
+          count: { $sum: 1 }
+        }
+      },
+      { $sort: { count: -1 } },
+      { $limit: 1 }
+    ]).exec();
+
+    if (mostOrderedItem.length > 0) {
+      const itemId = mostOrderedItem[0].foodid;
+      const itemCount = mostOrderedItem[0].count;
+      
+      res.status(200).json({ itemId, itemCount });
+    } else {
+      res.status(404).json({ message: 'No items found in the cart.' });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error.' });
+  }
+});
+
 
 module.exports = router;

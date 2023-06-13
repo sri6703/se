@@ -38,7 +38,7 @@ router.post('/:name/:email/:pwd', async (req, res) => {
         pwd: req.params.pwd,
       });
   
-      const newlogin = await logindet.save();
+      const newlogin = await AdminLogindet.save();
       res.status(201).json({ message: "User created successfully" });
     } catch (err) {
       console.error(err.message);
@@ -128,7 +128,7 @@ router.delete('/:email', getlogin, async (req, res) => {
 router.post("/:email", async (req, res) => {
   const { email } = req.params;
   try {
-    const oldUser = await login.findOne({ email });
+    const oldUser = await AdminLogin.findOne({ email });
     if (!oldUser) {
       return res.json({ status: "User Not Exists!!" });
     }
@@ -167,7 +167,7 @@ router.post("/:email", async (req, res) => {
 router.get("/:id/:token", async (req, res) => {
   const { id, token } = req.params;
   console.log(req.params);
-  const oldUser = await login.findOne({ _id: id });
+  const oldUser = await AdminLogin.findOne({ _id: id });
   if (!oldUser) {
     return res.json({ status: "User Not Exists!!" });
   }
@@ -185,14 +185,14 @@ router.post("/:id/:token", async (req, res) => {
   const { id, token } = req.params;
   const { password } = req.body;
   // Rest of your code
-  const oldUser = await login.findOne({ _id: id });
+  const oldUser = await AdminLogin.findOne({ _id: id });
   if (!oldUser) {
     return res.json({ status: "User Not Exists!!" });
   }
   const secret = JWT_SECRET + oldUser.pwd;
   try {
     const verify = jwt.verify(token, secret);
-    await login.updateOne(
+    await AdminLogin.updateOne(
       {
         _id: id,
       },
@@ -209,6 +209,8 @@ router.post("/:id/:token", async (req, res) => {
     res.json({ status: "Something Went Wrong" });
   }
 });
+
+
 
 
 

@@ -47,6 +47,5 @@ GET http://localhost:4201/login-page/:id/:token
 POST http://localhost:4201/login-page/:id/:token
 
 
-###
-#forgot pwd 
+
 

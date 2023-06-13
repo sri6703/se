@@ -3,6 +3,14 @@ const router = express.Router();
 const Cart = require('../models/cart');
 const User = require('../models/login');
 const Order = require('../models/order');
+const bodyParser = require('body-parser');
+
+
+const app = express();
+app.set('view engine', 'ejs');
+router.use(express.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // router.get('/:regno', async (req, res) => {
 //   try {
@@ -272,6 +280,19 @@ router.post('/place-order', async (req, res) => {
     res.status(500).json({ message: 'Internal server error.' });
   }
 });
+
+router.get('/orders', async (req, res) => {
+  try {
+    const { userid} = req.body;
+    const orders = await Order.find({ user: userid }).populate('item');
+    res.json(orders);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Internal server error.' });
+  }
+});
+
+
 
 
 
