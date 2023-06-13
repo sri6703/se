@@ -142,17 +142,18 @@ router.get('/:name', async (req, res) => {
 
 router.post('/', async (req, res) => {
   try {
-    const { userid, itemId, quantity } = req.body;
+    const { userid, itemId, quantity, date } = req.body;
 
     const existingCartItem = await Cart.findOne({ user: userid, item: itemId });
 
     if (existingCartItem) {
       // If the item already exists in the cart, update the quantity
       existingCartItem.quantity = quantity;
+      existingCartItem.date = date;
       await existingCartItem.save();
     } else { 
       // If the item doesn't exist in the cart, create a new cart item
-      const newCartItem = new Cart({ user: userid, item: itemId, quantity });
+      const newCartItem = new Cart({ user: userid, item: itemId, quantity, date });
       await newCartItem.save();
     }
 
@@ -225,9 +226,47 @@ router.get('/:userId', async (req, res) => {
       itemName: cartItem.item.name,
       price: cartItem.item.price,
       quantity: cartItem.quantity,
+      date: cartItem.date,
     }));
 
     res.render('billing', { user, items }); // Render the billing page with user and items data
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Internal server error.' });
+  }
+});
+
+router.post('/place-order', async (req, res) => {
+  try {
+    const { userid} = req.body;
+
+    const existingUser = await User.findOne({ regno:userid });
+    if (!existingUser) {
+      return res.status(404).json({ message: `User '${userid}' not found.` });
+    }
+
+    const cartItems = await Cart.find({ user : userid }).populate('item');
+    if (!cartItems.length) {
+      return res.status(400).json({ message: 'No items found in the cart.' });
+    }
+
+    // Create an order for each item in the cart
+    const orders = cartItems.map((cartItem) => {
+      return {
+        userid,
+        item: cartItem.item._id,
+        quantity: cartItem.quantity,
+        date: new Date()
+      };
+    });
+
+    // Store the orders in the database
+    await Order.insertMany(orders);
+
+    // Clear the cart after placing the order
+    await Cart.deleteMany({ userid });
+
+    res.status(200).json({ message: 'Order placed successfully.' });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Internal server error.' });

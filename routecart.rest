@@ -27,5 +27,9 @@ PATCH http://localhost:4201/addtocart/:itemId
 
 GET http://localhost:4201/addtocart/:itemId
 
+###
+
+POST http://localhost:4201/addtocart/place-order
+
 
 
