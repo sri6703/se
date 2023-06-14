@@ -163,32 +163,43 @@ router.patch('/:_id/:exist_quantity', async (req, res) => {
   }
 });
 
-router.get('/cart/most-ordered', async (req, res) => {
+router.get('/ordered', async (req, res) => {
   try {
-    const mostOrderedItem = await Cart.aggregate([
+    const cartItems = await Cart.aggregate([
       {
         $group: {
-          foodid: '$item',
-          count: { $sum: 1 }
+          _id: '$item',
+          count: { $sum: '$quantity' }
         }
       },
-      { $sort: { count: -1 } },
-      { $limit: 1 }
-    ]).exec();
+      {
+        $lookup: {
+          from: 'menus', // Assuming 'menus' is the collection name for items
+          localField: '_id',
+          foreignField: '_id',
+          as: 'itemDetails'
+        }
+      },
+      {
+        $unwind: '$itemDetails'
+      },
+      {
+        $project: {
+          _id: 0,
+          name: '$itemDetails.name',
+          count: 1
+        }
+      }
+    ]);
 
-    if (mostOrderedItem.length > 0) {
-      const itemId = mostOrderedItem[0].foodid;
-      const itemCount = mostOrderedItem[0].count;
-      
-      res.status(200).json({ itemId, itemCount });
-    } else {
-      res.status(404).json({ message: 'No items found in the cart.' });
-    }
-  } catch (error) {
-    console.error(error);
+    res.json(cartItems);
+  } catch (err) {
+    console.error(err);
     res.status(500).json({ message: 'Internal server error.' });
   }
 });
+
+
 
 
 module.exports = router;

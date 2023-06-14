@@ -20,7 +20,9 @@ PATCH http://localhost:4201/canteen
 
 
 ###
+
 PATCH http://localhost:4201/canteen/150/:exist_quantity
+
 ###
 
 PATCH http://localhost:4201/canteen/:_id/:exist_quantity
@@ -30,5 +32,5 @@ PATCH http://localhost:4201/canteen/:_id/:exist_quantity
 
 ###
 
-GET http://localhost:4201/canteen/cart/most-ordered
+GET http://localhost:4201/canteen/ordered
 
