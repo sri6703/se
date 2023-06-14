@@ -33,6 +33,10 @@ POST http://localhost:4201/addtocart/place-order
 
 ###
 
+GET http://localhost:4201/addtocart/orders/:user
+
+###
+
 GET http://localhost:4201/addtocart/orders
 
 

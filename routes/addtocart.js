@@ -281,16 +281,39 @@ router.post('/place-order', async (req, res) => {
   }
 });
 
-router.get('/orders', async (req, res) => {
-  try {
-    const { userid} = req.body;
-    const orders = await Order.find({ user: userid }).populate('item');
+router.get('/orders/:user', async (req, res) => {
+  try{
+  const { user  } = req.params;
+
+    // Check if the user exists
+    const userExists = await User.findOne({  });
+    if (!userExists) {
+      return res.status(404).json({ message: 'Users not found ${user}.' });
+    }
+
+    // Retrieve the feedback for the user
+    const orders = await Order.find({ user });
+
+    if (orders.length === 0) {
+      return res.status(404).json({ message: 'No feedback found for the user.' });
+    }
+
     res.json(orders);
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Internal server error.' });
   }
 });
+
+router.get('/orders',async (req,res) => {
+  try {
+      const allorder = await Order.find()
+      res.json(allorder)
+  } catch (err) {
+      res.status(500).json({message: err.message})
+  }
+})
+
 
 
 
