@@ -21,6 +21,8 @@ app.use('/canteen', canteenroute);
 const cartroute = require('./routes/addtocart');
 app.use('/addtocart', cartroute);
 
+const feedbackroute = require('./routes/feedback');
+app.use('/feedback', feedbackroute);
 module.exports = app; // Export the Express app
 
 // Move the server listening code to a separate function

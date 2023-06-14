@@ -1,22 +1,40 @@
 const express = require('express');
 const router = express.Router();
 const Feedback = require('../models/feedback');
+const cors = require('cors');
+const login = require('../models/login');
 
-router.get('/:regno', async (req, res) => {
+// Enable CORS for all routes
+router.use(cors());
+router.post('/', async (req, res) => {
   try {
-    const { regno } = req.params;
+    const { regno, type, subtype, content } = req.body;
 
     // Check if the user exists
-    const userExists = await User.findOne({ regno });
+    const userExists = await login.findOne({ regno });
     if (!userExists) {
       return res.status(404).json({ message: 'User not found.' });
     }
+    // Create new feedback document
+    const newFeedback = new Feedback({ regno, type, subtype, content });
 
-    // Retrieve the feedback for the user
-    const feedback = await Feedback.find({ regno });
+    // Save the feedback to the database
+    await newFeedback.save();
+
+    res.json({ message: 'Feedback added successfully.' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Internal server error.' });
+  }
+});
+
+router.get('/', async (req, res) => {
+  try {
+    // Find all feedback records
+    const feedback = await Feedback.find();
 
     if (feedback.length === 0) {
-      return res.status(404).json({ message: 'No feedback found for the user.' });
+      return res.status(404).json({ message: 'No feedback found.' });
     }
 
     res.json(feedback);
@@ -25,5 +43,30 @@ router.get('/:regno', async (req, res) => {
     res.status(500).json({ message: 'Internal server error.' });
   }
 });
+
+// DELETE feedback by regno
+router.delete('/:regno', async (req, res) => {
+  try {
+    const { regno } = req.params;
+
+    // Check if the user exists
+    const userExists = await login.findOne({ regno });
+    if (!userExists) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
+
+    // Find and delete feedback by regno
+    const feedback = await Feedback.findOneAndDelete({ regno });
+    if (!feedback) {
+      return res.status(404).json({ message: 'Feedback not found.' });
+    }
+
+    res.json({ message: 'Feedback deleted successfully.' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Internal server error.' });
+  }
+});
+
 
 module.exports = router;

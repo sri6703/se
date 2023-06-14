@@ -1,0 +1,11 @@
+
+POST http://localhost:4201/feedback/
+
+###
+
+GET http://localhost:4201/feedback/
+
+###
+
+DELETE http://localhost:4201/feedback/:regno
+

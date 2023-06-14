@@ -5,15 +5,15 @@ const feedbackSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  canteen: {
+  type: {
     type: String,
     required: true
   },
-  foodItem: {
+  subtype: {
     type: String,
     required: true
   },
-  feedback: {
+  content: {
     type: String,
     required: true
   }
