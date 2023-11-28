@@ -1,14 +1,23 @@
 const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
-require('dotenv').config()
-mongoose.connect(process.env.DATABASE_URL);
+require('dotenv').config();
+
+// Update the connection string to Cosmos DB
+const cosmosDBConnectionString = process.env.COSMOSDB_CONNECTION_STRING; // Use the connection string you obtained from the Azure portal
+
+mongoose.connect(cosmosDBConnectionString, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+});
+
 const db = mongoose.connection;
 db.on('error', (error) => console.error(error));
 db.once('open', () => console.log("🦅 << Database Connected >> 🦅"));
 
 app.use(express.json());
 app.set('view engine', 'ejs');
+
 const subscribersRouter = require('./routes/login-page');
 app.use('/login-page', subscribersRouter);
 
@@ -23,6 +32,7 @@ app.use('/addtocart', cartroute);
 
 const feedbackroute = require('./routes/feedback');
 app.use('/feedback', feedbackroute);
+
 module.exports = app; // Export the Express app
 
 // Move the server listening code to a separate function
