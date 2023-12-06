@@ -5,8 +5,9 @@ const User = require('../models/login');
 const Order = require('../models/order');
 const bodyParser = require('body-parser');
 
-
+const cors = require('cors');
 const app = express();
+app.use(cors());
 app.set('view engine', 'ejs');
 router.use(express.urlencoded({ extended: false }));
 app.use(bodyParser.json());
